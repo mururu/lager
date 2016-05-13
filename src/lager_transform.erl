@@ -61,7 +61,11 @@ walk_ast(Acc, [{function, Line, Name, Arity, Clauses}|T]) ->
 walk_ast(Acc, [{attribute, _, record, {Name, Fields}}=H|T]) ->
     FieldNames = lists:map(fun({record_field, _, {atom, _, FieldName}}) ->
                 FieldName;
+            ({typed_record_field, {record_field, _, {atom, _, FieldName}}, _Type}) ->
+                FieldName;
             ({record_field, _, {atom, _, FieldName}, _Default}) ->
+                FieldName;
+            ({typed_record_field, {record_field, _, {atom, _, FieldName}, _Default}, _Type}) ->
                 FieldName
         end, Fields),
     stash_record({Name, FieldNames}),
